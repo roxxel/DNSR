@@ -46,7 +46,7 @@ namespace DNSR
                 _ = Task.Run(async () =>
                 {
                     App.Current.Dispatcher.Invoke(() =>
-                        this.RootSnackbar.Show("Notice", "Application is still available in Tray. To close it right click on application icon in tray and click on Close application", Wpf.Ui.Common.SymbolRegular.Info24)
+                        this.RootSnackbar.Show("Notice", "Application is still available in System Tray. To close it right click on application icon in tray and click on Close application", Wpf.Ui.Common.SymbolRegular.Info24)
                     );
                     await Task.Delay(4000);
                     App.Current.Dispatcher.Invoke(() =>

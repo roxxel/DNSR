@@ -16,6 +16,7 @@ using DNSR.RNNoise;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 namespace DNSR.ViewModels
 {
@@ -27,6 +28,8 @@ namespace DNSR.ViewModels
         private BufferedWaveProvider _playBuffer;
         private List<string> _outputDevices;
         private Configuration? _configuration;
+        private RegistryKey startupKey = Registry.CurrentUser.OpenSubKey
+            ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
         public ObservableCollection<string> InputDevices { get; set; }
         public Configuration Configuration => _configuration;
@@ -65,6 +68,18 @@ namespace DNSR.ViewModels
 
             LoadConfig();
             StartProcessing();
+            AddToStartup();
+        }
+
+        private async Task AddToStartup()
+        {
+            await Task.Delay(1000);
+            var dnsrKey = startupKey.GetValue("DNSR");
+            if (dnsrKey == null)
+            {
+                startupKey.SetValue("DNSR", System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
+                (App.Current.MainWindow as MainWindow).RootSnackbar.Show("Notification", "Application is added to auto startup. You can disable it in Task Manager");
+            }
         }
 
         private void LoadConfig()
